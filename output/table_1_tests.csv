@@ -1,3 +1,0 @@
-"metric","method","statistic","df","p_value"
-"sensitivity","Welch Two Sample t-test",-1.47630835989473,1711.38157170129,0.140045099767017
-"specificity","Welch Two Sample t-test",6.13582483960636,1663.10731024367,1.05668312041605e-09

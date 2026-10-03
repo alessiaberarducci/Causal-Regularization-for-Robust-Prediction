@@ -1,6 +1,6 @@
 # Generalized Causal Regularization
 
-Code, data, and results for the computational experiments in
+Code and data for the computational experiments in
 *Generalized Causal Regularization*.
 
 <!--
@@ -41,7 +41,7 @@ repository folder. Execution logs are saved locally in `output/logs/`.
 
 - `code/`: experiment scripts and shared functions.
 - `data/`: input datasets, source information, and variable descriptions.
-- `output/`: figures and numerical results.
+- `output/`: generated figures and numerical results (created when the scripts run).
 
 ## Figures and table
 
