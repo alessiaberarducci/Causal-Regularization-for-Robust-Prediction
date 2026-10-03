@@ -1,26 +1,79 @@
-# Causal Regularization for Robust Prediction
+# Generalized Causal Regularization
 
+Code, data, and results for the computational experiments in
+*Generalized Causal Regularization*.
 
+<!--
+# Generalized Causal Regularization
 
-## 📌 Abstract
+Code and data for reproducing the computational experiments in
+*Generalized Causal Regularization*.
 
-Prediction is one of the most important uses of statistical methods. However, predictive systems typically struggle when the environment in which they were trained changes. The central research question is to identify and estimate stable models when only heterogeneous and potentially unknown environments are available. Existing approaches like Causal Dantzig [(Rothenhäusler et al.,2019)](https://arxiv.org/pdf/1706.06159) and Causal Regularization [(Kania and Wit, 2025)](https://arxiv.org/pdf/2205.01593) directly identify the causal parameter as the unique solution with equal residual moments across environments. We relax assumptions to obtain a robust best linear predictor without requiring an unperturbed environment or linear shifts. Causal interpretation is recovered under the inner-product invariance condition and when the conditional mean of the target given its causal parents remains invariant across environments.
+## Requirements
 
-We generalize Causal Regularization to a framework that uses two environments drawn from a common class $\mathcal{U}$ and measures the differences between them through a generalized risk difference induced by changes in second-order moments of the covariates and response. In this setting, the risk difference may be non-convex and may exhibit saddle-point geometry. We show that the parameter $\beta^\star$ is characterized as a stationary point of this risk difference. By defining a sieve of out-of-sample distributions, we derive a worst-risk decomposition over increasing classes of environments and obtain a closed-form estimator ${\beta_\gamma}$ that interpolates between OLS and the Regularization limit solution. 
+R 4.6.1 and its standard packages. No additional R packages are required.
+All input data are included.
 
-Our results show that the proposed estimator can achieve prediction stability over a broad class of perturbed environments, even when trained on a limited set. The framework separates two goals: robustness as a stable prediction under weak assumptions and causality as a stronger property obtained with additional invariance structure.
+## Reproduce the experiments
 
----
+Open a terminal in the repository folder and run:
 
-## 🚀 Project Setup
+```sh
+Rscript --vanilla code/run_all.R
+```
 
-All code is implemented in **R**.
+This command runs the simulations, RNA analysis, and Causal Chamber analysis,
+and saves figures and numerical results in `output/`. 
+Each analysis runs in a separate R session.
 
-The project is organized into two main folders:
+To run one part:
 
-* `functions/` — Contains all core R functions used across the project (e.g.,moments, risk computation).
-* `scripts/` — Contains the main R scripts to run experiments and generate results. These scripts **source** the files from `functions/`.
+```sh
+Rscript --vanilla code/run_all.R simulations
+Rscript --vanilla code/run_all.R rna
+Rscript --vanilla code/run_all.R chamber
+```
 
-## ✉️ Contact
+Individual entry scripts can also be run with `Rscript --vanilla` from the
+repository folder. Execution logs are saved locally in `output/logs/`.
 
-For questions or comments about the code, please contact the authors.
+## Repository structure
+
+- `code/`: experiment scripts and shared functions.
+- `data/`: input datasets, source information, and variable descriptions.
+- `output/`: figures and numerical results.
+
+## Figures and table
+
+Output paths below are relative to `output/`.
+
+| Result | Entry script | Output |
+|---|---|---|
+| Figure 3 | `code/simulations/example_A.R` | `simulations/figure_03_a.pdf`, `simulations/figure_03_b.pdf` |
+| Figure 5 | `code/simulations/example_B.R` | `simulations/figure_05_a.pdf`, `simulations/figure_05_b.pdf` |
+| Figure 7 | `code/simulations/example_C.R` | `simulations/figure_07_a.pdf`, `simulations/figure_07_b.pdf` |
+| Figure 9 | `code/simulations/example_D.R` | `simulations/figure_09_a.pdf`, `simulations/figure_09_b.pdf` |
+| Figure 10 | `code/simulations/anchor_comparison.R` | `simulations/figure_10.pdf` |
+| Figure 11(a) | `code/RNA/paper_RNA.R` | `rna/rpe_subsample_OLS_CV_scatterplot_log_full_sample_alternative_n2.pdf` |
+| Figure 11(b) | `code/RNA/paper_RNA.R` | `rna/rpe_subsample_OLS_CV_scatterplot_log_n100_alternative_n2.pdf` |
+| Figure 12(a) | `code/RNA/paper_RNA.R` | `rna/rpe_OLS_minus_CR_MSE_histogram_full_sample_alternative_n2.pdf` |
+| Figure 12(b) | `code/RNA/paper_RNA.R` | `rna/rpe_OLS_minus_CR_MSE_histogram_n100_alternative_n2.pdf` |
+| Table 1 | `code/chamber/paper_chamber.R` | `table_1.csv` |
+| Tests accompanying Table 1 | `code/chamber/paper_chamber.R` | `table_1_tests.csv` |
+
+Figures 1, 2, 4, 6, 8, and 13 are conceptual diagrams rather than computed experiments.
+CSV files and RDS objects contain coefficient paths, cross-validation results,
+and intermediate fitted objects. Figure 10 uses the same observations and
+causal regularization path as Figure 9.
+
+## Data sources
+
+RNA data are the processed RPE1 measurements used by Shen, Bühlmann, and Taeb in
+[Causality-oriented robustness: exploiting general noise interventions](https://arxiv.org/abs/2307.10299).
+Chamber data are the `lt_interventions_standard_v1` dataset from
+[Causal Chamber](https://github.com/juangamella/causal-chamber).
+
+See [data/README.md](data/README.md) for source versions, preprocessing,
+and download instructions, and
+[data/data_dictionary.md](data/data_dictionary.md) for variable descriptions.
+-->

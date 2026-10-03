@@ -1,0 +1,8 @@
+.DS_Store
+.RData
+.Rhistory
+Rplots.pdf
+__MACOSX/
+*.zip
+/output/logs/
+/manuscript/
