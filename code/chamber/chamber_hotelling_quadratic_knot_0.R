@@ -13,3 +13,10 @@ Sys.setenv(
 )
 
 source("code/chamber/chamber_quadratic_all_pairs_screening.R")
+
+average_direct_causes <- c(
+  OLS = mean(positive_gamma_results$OLS_direct_rejected),
+  CR = mean(positive_gamma_results$CV_direct_rejected)
+)
+cat("\nAverage number of direct causes identified (gamma_CV > 0):\n")
+print(average_direct_causes)
