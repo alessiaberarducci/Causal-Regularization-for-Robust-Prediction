@@ -1,5 +1,3 @@
-# Chamber analysis of all environment pairs.
-
 source("code/chamber/chamber_preprocessing.R")
 
 source("code/chamber/chamber_estimation.R")

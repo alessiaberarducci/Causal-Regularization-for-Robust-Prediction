@@ -1,5 +1,3 @@
-# Chamber environment-pair analysis and result summaries.
-
 write_screening_summary_pdf <- function(results, file) {
   successful <- results[results$status == "ok", , drop = FALSE]
   desired <- successful[successful$desired_pattern, , drop = FALSE]

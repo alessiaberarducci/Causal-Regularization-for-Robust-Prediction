@@ -1,5 +1,3 @@
-# Chamber preprocessing and spline design matrices.
-
 Sys.setenv(
   VECLIB_MAXIMUM_THREADS = "1",
   OMP_NUM_THREADS = "1",

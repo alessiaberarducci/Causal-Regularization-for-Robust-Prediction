@@ -1,5 +1,3 @@
-# Chamber quadratic splines with a single knot at zero.
-
 Sys.setenv(
   CHAMBER_PAIR_FIXED_KNOTS = "0",
   CHAMBER_PAIR_EXCLUDE_IR2_RELATED = "true",

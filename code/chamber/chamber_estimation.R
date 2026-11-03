@@ -1,5 +1,3 @@
-# Chamber coefficient paths and covariance estimates.
-
 gamma_solution_matrix <- function(matrices, beta_cp) {
   Gplus <- matrices$Gplus
   Gdelta_plus <- matrices$Gdelta_plus
@@ -77,10 +75,12 @@ fit_estimators_and_tests <- function(model_data, gamma) {
   residual_e_ols <- drop(model_data$ye - model_data$Xe %*% beta_ols)
   residual_o_ols <- drop(model_data$yo - model_data$Xo %*% beta_ols)
 
-  variance_Ze_ols <- stats::var(residual_e_ols) *
-    crossprod(model_data$Xe) / nrow(model_data$Xe)^2
-  variance_Zo_ols <- stats::var(residual_o_ols) *
-    crossprod(model_data$Xo) / nrow(model_data$Xo)^2
+  variance_Ze_ols <- crossprod(
+    sweep(model_data$Xe, 1L, residual_e_ols, "*")
+  ) / nrow(model_data$Xe)^2
+  variance_Zo_ols <- crossprod(
+    sweep(model_data$Xo, 1L, residual_o_ols, "*")
+  ) / nrow(model_data$Xo)^2
   variance_beta_ols <- Gplus_inverse %*%
     (variance_Ze_ols + variance_Zo_ols) %*% t(Gplus_inverse)
   variance_beta_ols <- 0.5 * (
@@ -90,10 +90,12 @@ fit_estimators_and_tests <- function(model_data, gamma) {
   residual_e_cv <- drop(model_data$ye - model_data$Xe %*% beta_cv)
   residual_o_cv <- drop(model_data$yo - model_data$Xo %*% beta_cv)
 
-  variance_Ze_cv <- stats::var(residual_e_cv) *
-    crossprod(model_data$Xe) / nrow(model_data$Xe)^2
-  variance_Zo_cv <- stats::var(residual_o_cv) *
-    crossprod(model_data$Xo) / nrow(model_data$Xo)^2
+  variance_Ze_cv <- crossprod(
+    sweep(model_data$Xe, 1L, residual_e_cv, "*")
+  ) / nrow(model_data$Xe)^2
+  variance_Zo_cv <- crossprod(
+    sweep(model_data$Xo, 1L, residual_o_cv, "*")
+  ) / nrow(model_data$Xo)^2
   variance_Zgamma <-
     (identity + A_gamma) %*% variance_Ze_cv %*%
       t(identity + A_gamma) +

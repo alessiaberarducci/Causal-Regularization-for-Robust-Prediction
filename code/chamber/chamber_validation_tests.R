@@ -1,5 +1,3 @@
-# Chamber cross-validation and classification metrics.
-
 fit_basis_cross_validation_exact <- function(
     model_data, candidate_indices = seq_along(gamma_grid)) {
   candidate_indices <- sort(unique(as.integer(candidate_indices)))

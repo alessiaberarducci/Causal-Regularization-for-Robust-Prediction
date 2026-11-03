@@ -1,5 +1,3 @@
-# Grouped Hotelling tests for Chamber coefficients.
-
 format_chamber_group_test_p_value <- function(value) {
   if (is.finite(value)) {
     format.pval(value, digits = 3, eps = 1e-4)

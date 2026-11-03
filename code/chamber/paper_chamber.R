@@ -1,5 +1,3 @@
-# Table 1: Chamber classification metrics and Welch tests.
-
 source("code/chamber/chamber_hotelling_quadratic_knot_0.R")
 
 if (any(screening_results$status != "ok")) {
