@@ -104,6 +104,7 @@ write_screening_summary_pdf <- function(results, file) {
 
 build_classification_recap <- function(results) {
   successful <- results[results$status == "ok", , drop = FALSE]
+  gamma_positive <- successful[successful$gamma_CV > 0, , drop = FALSE]
   gamma_zero <- successful[successful$gamma_CV == 0, , drop = FALSE]
   metric_names <- c(
     Sensitivity = "sensitivity",
@@ -124,6 +125,21 @@ build_classification_recap <- function(results) {
     )
   }))
   row.names(mean_metrics) <- NULL
+
+  positive_gamma_metrics <- do.call(rbind, lapply(names(metric_names), function(label) {
+    metric <- unname(metric_names[label])
+    data.frame(
+      Metric = label,
+      OLS = if (nrow(gamma_positive)) {
+        mean(gamma_positive[[paste0(metric, "_OLS")]], na.rm = TRUE)
+      } else NA_real_,
+      CR = if (nrow(gamma_positive)) {
+        mean(gamma_positive[[paste0(metric, "_CV")]], na.rm = TRUE)
+      } else NA_real_,
+      check.names = FALSE
+    )
+  }))
+  row.names(positive_gamma_metrics) <- NULL
 
   comparison_metrics <- metric_names[c(
     "Precision", "F1", "Balanced accuracy", "MCC"
@@ -169,25 +185,6 @@ build_classification_recap <- function(results) {
   )
   row.names(gamma_zero_metrics) <- NULL
 
-  desired <- successful[successful$desired_pattern, , drop = FALSE]
-  best_pair <- NULL
-  if (nrow(desired)) {
-    best <- desired[1L, , drop = FALSE]
-    best_pair <- data.frame(
-      Metric = names(metric_names),
-      OLS = vapply(metric_names, function(metric) {
-        best[[paste0(metric, "_OLS")]]
-      }, numeric(1)),
-      CR = vapply(metric_names, function(metric) {
-        best[[paste0(metric, "_CV")]]
-      }, numeric(1)),
-      check.names = FALSE
-    )
-    attr(best_pair, "environment_1") <- best$environment_1
-    attr(best_pair, "environment_2") <- best$environment_2
-    attr(best_pair, "gamma_CV") <- best$gamma_CV
-  }
-
   list(
     knots = fixed_knots,
     pairs_evaluated = nrow(results),
@@ -199,10 +196,11 @@ build_classification_recap <- function(results) {
       successful$desired_pattern & successful$all_direct_found
     ),
     mean_metrics = mean_metrics,
+    positive_gamma_metrics = positive_gamma_metrics,
+    positive_gamma_results = gamma_positive,
     gamma_zero_metrics = gamma_zero_metrics,
     gamma_zero_results = gamma_zero,
-    pairwise_comparison = pairwise_comparison,
-    best_pair = best_pair
+    pairwise_comparison = pairwise_comparison
   )
 }
 
@@ -225,6 +223,16 @@ print_classification_recap <- function(recap, digits = 4L) {
   mean_table[c("OLS", "CR")] <- round(mean_table[c("OLS", "CR")], digits)
   print(mean_table, row.names = FALSE)
 
+  cat(
+    "\nMean metrics for the ", recap$positive_gamma_pairs,
+    " pairs with gamma_CV > 0\n", sep = ""
+  )
+  positive_gamma_table <- recap$positive_gamma_metrics
+  positive_gamma_table[c("OLS", "CR")] <- round(
+    positive_gamma_table[c("OLS", "CR")], digits
+  )
+  print(positive_gamma_table, row.names = FALSE)
+
   cat("\nPairwise comparison over all successful pairs\n")
   print(recap$pairwise_comparison, row.names = FALSE)
 
@@ -237,19 +245,6 @@ print_classification_recap <- function(recap, digits = 4L) {
     gamma_zero_table[["OLS = CV"]], digits
   )
   print(gamma_zero_table, row.names = FALSE)
-
-  if (!is.null(recap$best_pair)) {
-    cat(
-      "\nHighest-ranked desired pair:\n",
-      attr(recap$best_pair, "environment_1"), " vs ",
-      attr(recap$best_pair, "environment_2"),
-      "; gamma_CV = ", attr(recap$best_pair, "gamma_CV"), "\n",
-      sep = ""
-    )
-    best_table <- recap$best_pair
-    best_table[c("OLS", "CR")] <- round(best_table[c("OLS", "CR")], digits)
-    print(best_table, row.names = FALSE)
-  }
 
   invisible(recap)
 }
@@ -400,6 +395,8 @@ complete_desired_count <- sum(
 )
 classification_recap <- build_classification_recap(screening_results)
 
+positive_gamma_results <- classification_recap$positive_gamma_results
+positive_gamma_metrics <- classification_recap$positive_gamma_metrics
 gamma_zero_results <- classification_recap$gamma_zero_results
 gamma_zero_metrics <- classification_recap$gamma_zero_metrics
 print_classification_recap(classification_recap)
